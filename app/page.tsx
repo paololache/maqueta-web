@@ -1,13 +1,6 @@
-import type { Metadata } from "next";
 import { ArrowDown } from "lucide-react";
 import { AlcanceViewer } from "@/components/alcance-viewer";
 import { Reveal } from "@/components/reveal";
-
-export const metadata: Metadata = {
-  title: { absolute: "Maqueta de alcance · Sitio web de 3 secciones" },
-  description:
-    "Revisa la estructura estándar de tu sitio web: header, 3 secciones y footer, con diseño responsive, formulario, WhatsApp, SEO técnico y hosting incluido.",
-};
 
 export default function AlcancePage() {
   return (

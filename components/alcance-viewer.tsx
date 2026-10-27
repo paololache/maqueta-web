@@ -220,6 +220,20 @@ const light = (h: number, primary: string, mid: string, accent: string): Record<
 
 const palettes: { key: string; label: string; swatch: [string, string]; vars: Record<string, string> }[] = [
   {
+    key: "vivo",
+    label: "Vivo",
+    swatch: ["oklch(0.55 0.22 275)", "oklch(0.78 0.14 220)"],
+    vars: {
+      ...light(280, "oklch(0.55 0.22 275)", "oklch(0.62 0.21 305)", "oklch(0.78 0.14 220)"),
+      "--background": "oklch(1 0 0)",
+      "--card": "oklch(1 0 0)",
+      "--foreground": "oklch(0.22 0.06 275)",
+      "--secondary": "oklch(0.96 0.03 280)",
+      "--muted": "oklch(0.965 0.02 280)",
+      "--border": "oklch(0.91 0.03 280)",
+    },
+  },
+  {
     key: "neutro",
     label: "Neutro",
     swatch: ["oklch(0.38 0.03 255)", "oklch(0.8 0.02 230)"],
@@ -290,7 +304,7 @@ export function AlcanceViewer() {
   const [active, setActive] = useState<Scope | null>(null);
   const [device, setDevice] = useState<Device>("desktop");
   const [labels, setLabels] = useState(true);
-  const [paletteKey, setPaletteKey] = useState("neutro");
+  const [paletteKey, setPaletteKey] = useState("vivo");
   const [hero, setHero] = useState<HeroKey>("dividido");
   const [seed, setSeed] = useState(7);
   const [slide, setSlide] = useState(0);

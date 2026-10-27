@@ -19,12 +19,9 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "CEIBA — Ropa hecha con raíces",
-    template: "%s · CEIBA",
-  },
+  title: "Maqueta de alcance · Sitio web de 3 secciones",
   description:
-    "CEIBA es una marca de ropa latinoamericana: prendas atemporales, fibras naturales y producción responsable.",
+    "Revisa la estructura estándar de tu sitio web: header, 3 secciones y footer, con diseño responsive, formulario, WhatsApp, SEO técnico y hosting incluido.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

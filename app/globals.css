@@ -134,21 +134,21 @@
   }
 }
 
-/* Tema neutro (unisex) para la página /alcance */
+/* Tema vivo (unisex, fondo blanco) para la página /alcance */
 .theme-neutro {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.2 0.01 255);
+  --foreground: oklch(0.22 0.06 275);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.01 255);
-  --primary: oklch(0.38 0.03 255);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0.002 250);
-  --secondary-foreground: oklch(0.28 0.02 255);
-  --muted: oklch(0.97 0.002 250);
-  --muted-foreground: oklch(0.5 0.015 255);
-  --accent: oklch(0.96 0.003 250);
-  --accent-foreground: oklch(0.25 0.02 255);
-  --border: oklch(0.92 0.003 250);
-  --input: oklch(0.91 0.003 250);
-  --ring: oklch(0.38 0.03 255);
+  --card-foreground: oklch(0.22 0.06 275);
+  --primary: oklch(0.55 0.22 275);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.03 280);
+  --secondary-foreground: oklch(0.32 0.1 275);
+  --muted: oklch(0.965 0.02 280);
+  --muted-foreground: oklch(0.5 0.05 275);
+  --accent: oklch(0.95 0.04 280);
+  --accent-foreground: oklch(0.28 0.08 275);
+  --border: oklch(0.91 0.03 280);
+  --input: oklch(0.9 0.03 280);
+  --ring: oklch(0.55 0.22 275);
 }

@@ -1,11 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Check,
   Eye,
+  Palette as PaletteIcon,
+  LayoutTemplate,
+  ChevronLeft,
+  ChevronRight,
+  Shuffle,
   EyeOff,
   Lock,
   Mail,
@@ -157,6 +163,121 @@ const devices: { key: Device; label: string; icon: LucideIcon; width: number }[]
   { key: "desktop", label: "Escritorio", icon: Monitor, width: 1400 },
 ];
 
+
+type HeroKey =
+  | "dividido"
+  | "centrado"
+  | "inmersivo"
+  | "formulario"
+  | "tipografico"
+  | "carrusel"
+  | "album"
+  | "dinamico"
+  | "marquesina"
+  | "mosaico";
+
+const photoHeroes: HeroKey[] = ["carrusel", "album", "marquesina", "mosaico"];
+const words = ["clientes", "reservas", "ventas", "consultas", "confianza"];
+const slides = [
+  { t: "Tu negocio, a un clic de tus próximos clientes.", s: "Una web rápida y clara que convierte visitas en conversaciones." },
+  { t: "Servicios que generan confianza desde el primer vistazo.", s: "Presenta lo que haces con textos claros y un diseño profesional." },
+  { t: "Atención directa, a un mensaje de distancia.", s: "Formulario y WhatsApp siempre a la mano para tus clientes." },
+];
+const captions = ["Equipo", "Proceso", "Resultados", "Clientes", "Detalles"];
+const rnd = (seed: number, i: number) => {
+  const x = Math.sin(seed * 12.9898 + i * 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+const heroes: { key: HeroKey; label: string; desc: string }[] = [
+  { key: "mosaico", label: "Mosaico", desc: "Cuadrícula de fotos y datos estilo bento. Moderno y ordenado." },
+  { key: "marquesina", label: "Marquesina", desc: "Galería de fotos en movimiento continuo. Ideal para mostrar trabajos." },
+  { key: "dinamico", label: "Dinámico", desc: "Palabras que cambian solas sobre un fondo animado." },
+  { key: "album", label: "Álbum de fotos", desc: "Fotos tipo polaroid que puedes arrastrar. Transmite cercanía y confianza." },
+  { key: "carrusel", label: "Carrusel", desc: "Diapositivas a pantalla completa que cambian solas. Usa las flechas o los puntos." },
+  { key: "tipografico", label: "Tipográfico", desc: "Titular grande y cifras. Ideal para servicios profesionales." },
+  { key: "formulario", label: "Con formulario", desc: "Captura datos desde el primer vistazo." },
+  { key: "inmersivo", label: "Inmersivo", desc: "Fondo de color a todo ancho. Máximo impacto de marca." },
+  { key: "centrado", label: "Centrado", desc: "Mensaje al centro con visual debajo. Directo y elegante." },
+  { key: "dividido", label: "Dividido", desc: "Texto a la izquierda, visual a la derecha. El más versátil." },
+];
+
+const light = (h: number, primary: string, mid: string, accent: string): Record<string, string> => ({
+  "--background": `oklch(0.978 0.01 ${h})`,
+  "--foreground": `oklch(0.22 0.02 ${h})`,
+  "--card": `oklch(0.995 0.005 ${h})`,
+  "--primary": primary,
+  "--primary-foreground": "oklch(0.985 0.01 90)",
+  "--secondary": `oklch(0.94 0.025 ${h})`,
+  "--secondary-foreground": `oklch(0.3 0.04 ${h})`,
+  "--muted": `oklch(0.95 0.015 ${h})`,
+  "--muted-foreground": `oklch(0.5 0.025 ${h})`,
+  "--border": `oklch(0.88 0.02 ${h})`,
+  "--input": `oklch(0.88 0.02 ${h})`,
+  "--tpl-mid": mid,
+  "--tpl-accent": accent,
+});
+
+const palettes: { key: string; label: string; swatch: [string, string]; vars: Record<string, string> }[] = [
+  {
+    key: "neutro",
+    label: "Neutro",
+    swatch: ["oklch(0.38 0.03 255)", "oklch(0.8 0.02 230)"],
+    vars: {
+      ...light(250, "oklch(0.38 0.03 255)", "oklch(0.52 0.03 255)", "oklch(0.8 0.02 230)"),
+      "--background": "oklch(1 0 0)",
+      "--card": "oklch(1 0 0)",
+      "--secondary": "oklch(0.97 0.002 250)",
+      "--muted": "oklch(0.97 0.002 250)",
+      "--border": "oklch(0.92 0.003 250)",
+    },
+  },
+  {
+    key: "terracota",
+    label: "Terracota",
+    swatch: ["oklch(0.52 0.13 40)", "oklch(0.78 0.12 80)"],
+    vars: light(80, "oklch(0.52 0.13 40)", "oklch(0.62 0.14 55)", "oklch(0.78 0.12 80)"),
+  },
+  {
+    key: "oceano",
+    label: "Océano",
+    swatch: ["oklch(0.5 0.14 250)", "oklch(0.8 0.1 200)"],
+    vars: light(240, "oklch(0.5 0.14 250)", "oklch(0.6 0.13 230)", "oklch(0.8 0.1 200)"),
+  },
+  {
+    key: "bosque",
+    label: "Bosque",
+    swatch: ["oklch(0.45 0.09 155)", "oklch(0.82 0.12 120)"],
+    vars: light(130, "oklch(0.45 0.09 155)", "oklch(0.58 0.11 150)", "oklch(0.82 0.12 120)"),
+  },
+  {
+    key: "violeta",
+    label: "Violeta",
+    swatch: ["oklch(0.5 0.2 295)", "oklch(0.8 0.13 350)"],
+    vars: light(300, "oklch(0.5 0.2 295)", "oklch(0.6 0.2 320)", "oklch(0.8 0.13 350)"),
+  },
+  {
+    key: "noche",
+    label: "Noche",
+    swatch: ["oklch(0.17 0.02 270)", "oklch(0.72 0.15 190)"],
+    vars: {
+      "--background": "oklch(0.17 0.02 270)",
+      "--foreground": "oklch(0.96 0.01 270)",
+      "--card": "oklch(0.22 0.025 270)",
+      "--primary": "oklch(0.72 0.15 190)",
+      "--primary-foreground": "oklch(0.18 0.03 220)",
+      "--secondary": "oklch(0.26 0.03 270)",
+      "--secondary-foreground": "oklch(0.92 0.01 270)",
+      "--muted": "oklch(0.27 0.03 270)",
+      "--muted-foreground": "oklch(0.72 0.03 270)",
+      "--border": "oklch(1 0 0 / 13%)",
+      "--input": "oklch(1 0 0 / 16%)",
+      "--tpl-mid": "oklch(0.55 0.15 230)",
+      "--tpl-accent": "oklch(0.45 0.18 290)",
+    },
+  },
+];
+
 const scopeLabel: Record<Scope, string> = {
   responsive: "Responsive",
   contacto: "Formulario + WhatsApp",
@@ -169,6 +290,12 @@ export function AlcanceViewer() {
   const [active, setActive] = useState<Scope | null>(null);
   const [device, setDevice] = useState<Device>("desktop");
   const [labels, setLabels] = useState(true);
+  const [paletteKey, setPaletteKey] = useState("neutro");
+  const [hero, setHero] = useState<HeroKey>("dividido");
+  const [seed, setSeed] = useState(7);
+  const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [word, setWord] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [sent, setSent] = useState(false);
   const [checks, setChecks] = useState<boolean[]>(confirmaciones.map(() => false));
@@ -209,6 +336,491 @@ export function AlcanceViewer() {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSent(true);
+  };
+
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = setInterval(
+      () => {
+        if (hero === "carrusel" && !paused) setSlide((v) => (v + 1) % slides.length);
+        if (hero === "dinamico") setWord((v) => (v + 1) % words.length);
+      },
+      hero === "dinamico" ? 2200 : 5000,
+    );
+    return () => clearInterval(id);
+  }, [hero, paused, reduce, slide]);
+
+  const waText = [
+    "Hola, vengo desde la maqueta web y quiero mi sitio con esta configuración:",
+    `• Paleta de colores: ${palettes.find((pl) => pl.key === paletteKey)!.label}`,
+    `• Tipo de hero (portada): ${heroes.find((h) => h.key === hero)!.label}`,
+    `• Estructura: header, 3 secciones (Inicio, Servicios, Contacto) y footer`,
+    `• Alcance validado: ${confirmed}/${confirmaciones.length} puntos`,
+    "¿Me pueden enviar una propuesta?",
+  ].join("\n");
+  const WA = `https://wa.me/51940733418?text=${encodeURIComponent(waText)}`;
+
+  const renderHero = () => {
+    const dark = hero === "inmersivo";
+    const center = hero === "centrado";
+    const heroLabel = heroes.find((h) => h.key === hero)!.label;
+
+    const badge = (
+      <p
+        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs ${
+          dark ? "bg-white/15 text-white" : "bg-secondary text-secondary-foreground"
+        }`}
+      >
+        <span className={`size-1.5 rounded-full ${dark ? "bg-white" : "bg-primary"}`} />
+        Atención personalizada
+      </p>
+    );
+
+    const titleSize =
+      hero === "tipografico"
+        ? "text-5xl @2xl:text-6xl @4xl:text-8xl"
+        : "text-4xl @2xl:text-5xl @4xl:text-6xl";
+
+    const texto = (
+      <div className={`transition-all duration-300 ${hl(["textos", "seo"])}`}>
+        {badge}
+        <h1 className={`mt-5 leading-[1.05] ${titleSize} ${dark ? "text-white" : ""}`}>
+          Tu negocio, a un clic de tus{" "}
+          <em className={dark ? "text-white/75" : "text-primary"}>próximos clientes</em>.
+        </h1>
+        <p
+          className={`mt-5 max-w-md @2xl:text-lg ${center ? "mx-auto" : ""} ${
+            dark ? "text-white/80" : "text-muted-foreground"
+          }`}
+        >
+          Una web rápida, clara y pensada para convertir visitas en conversaciones. Cuéntanos qué
+          necesitas y te respondemos hoy.
+        </p>
+      </div>
+    );
+
+    const ctas = (
+      <div
+        className={`mt-8 flex flex-wrap gap-3 transition-all duration-300 ${center ? "justify-center" : ""} ${hl(["contacto"])}`}
+      >
+        <a
+          href={WA}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-[#25d366] px-6 text-sm font-medium text-[#04290f] transition-transform hover:-translate-y-0.5"
+        >
+          <MessageCircle className="size-4" />
+          Escríbenos por WhatsApp
+        </a>
+        <button
+          type="button"
+          onClick={() => goTo("servicios")}
+          className={`inline-flex h-12 items-center gap-2 rounded-full border px-6 text-sm transition-colors ${
+            dark ? "border-white/40 text-white hover:bg-white/10" : "border-foreground/20 hover:bg-secondary"
+          }`}
+        >
+          Ver servicios <ArrowRight className="size-4" />
+        </button>
+      </div>
+    );
+
+    const visual = (ratio: string) => (
+      <div className={`relative w-full transition-all duration-300 ${ratio} ${hl(["responsive"])}`}>
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary via-[var(--tpl-mid)] to-[var(--tpl-accent)]" />
+        <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_30%_20%,white/25,transparent_55%)]" />
+        <motion.div
+          animate={reduce ? undefined : { y: [0, -10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[12%] left-[8%] w-[62%] rounded-2xl bg-card/95 p-4 shadow-xl"
+        >
+          <div className="h-2 w-1/3 rounded bg-primary/70" />
+          <div className="mt-3 h-2 w-full rounded bg-muted" />
+          <div className="mt-2 h-2 w-4/5 rounded bg-muted" />
+          <div className="mt-4 h-8 w-24 rounded-full bg-foreground" />
+        </motion.div>
+        <motion.div
+          animate={reduce ? undefined : { y: [0, 12, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+          className="absolute right-[6%] bottom-[10%] flex items-center gap-3 rounded-2xl bg-card/95 p-3 pr-5 shadow-xl"
+        >
+          <span className="grid size-10 place-items-center rounded-full bg-[#25d366] text-[#04290f]">
+            <MessageCircle className="size-5" />
+          </span>
+          <span>
+            <span className="block text-xs font-medium">Nuevo mensaje</span>
+            <span className="block text-[11px] text-muted-foreground">«Hola, quiero cotizar»</span>
+          </span>
+        </motion.div>
+        <motion.div
+          animate={reduce ? undefined : { rotate: [0, 6, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[8%] right-[8%] grid size-14 place-items-center rounded-2xl bg-foreground text-background shadow-xl"
+        >
+          <Zap className="size-6" />
+        </motion.div>
+      </div>
+    );
+
+    const ph = (i: number, w: number, h: number) =>
+      `https://picsum.photos/seed/m${seed}-${i}/${w}/${h}`;
+
+    let body: React.ReactNode;
+    if (hero === "carrusel") {
+      body = (
+        <div
+          className="relative h-[460px] overflow-hidden @2xl:h-[580px]"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          <AnimatePresence>
+            <motion.img
+              key={`${seed}-${slide}`}
+              src={ph(slide, 1400, 800)}
+              alt="Foto de ejemplo"
+              initial={{ opacity: 0, scale: 1.12 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="absolute inset-0 size-full object-cover"
+            />
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
+          <div className="absolute inset-x-0 bottom-0 p-5 pb-16 text-white @2xl:p-8 @2xl:pb-20">
+            <div className={`max-w-2xl transition-all duration-300 ${hl(["textos", "seo"])}`}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={slide}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.45 }}
+                >
+                  <h1 className="text-3xl leading-[1.08] @2xl:text-5xl @4xl:text-6xl">{slides[slide].t}</h1>
+                  <p className="mt-3 max-w-lg text-white/80 @2xl:text-lg">{slides[slide].s}</p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className={`transition-all duration-300 ${hl(["contacto"])}`}>
+              <a
+                href={WA}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex h-12 items-center gap-2 rounded-full bg-[#25d366] px-6 text-sm font-medium text-[#04290f] transition-transform hover:-translate-y-0.5"
+              >
+                <MessageCircle className="size-4" />
+                Escríbenos por WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="absolute inset-x-0 bottom-5 flex items-center justify-between px-5 @2xl:px-8">
+            <div className="flex gap-2" role="tablist" aria-label="Diapositivas">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  aria-selected={slide === i}
+                  aria-label={`Diapositiva ${i + 1}`}
+                  onClick={() => setSlide(i)}
+                  className="relative h-1.5 w-10 overflow-hidden rounded-full bg-white/35"
+                >
+                  {slide === i && (
+                    <motion.span
+                      key={`${paused}-${slide}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: paused || reduce ? 0 : 5, ease: "linear" }}
+                      className="absolute inset-y-0 left-0 bg-white"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                aria-label="Anterior"
+                onClick={() => setSlide((v) => (v - 1 + slides.length) % slides.length)}
+                className="grid size-10 place-items-center rounded-full bg-white/20 text-white backdrop-blur transition-colors hover:bg-white/35"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Siguiente"
+                onClick={() => setSlide((v) => (v + 1) % slides.length)}
+                className="grid size-10 place-items-center rounded-full bg-white/20 text-white backdrop-blur transition-colors hover:bg-white/35"
+              >
+                <ChevronRight className="size-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (hero === "album") {
+      const spots = [
+        { left: "4%", top: "6%", w: "44%" },
+        { left: "46%", top: "2%", w: "40%" },
+        { left: "20%", top: "34%", w: "46%" },
+        { left: "56%", top: "42%", w: "38%" },
+        { left: "6%", top: "62%", w: "38%" },
+      ];
+      body = (
+        <div className="grid items-center gap-12 @2xl:grid-cols-2">
+          <div>
+            {texto}
+            {ctas}
+            <p className="mt-4 text-xs text-muted-foreground">Arrastra las fotos y pulsa «Mezclar imágenes».</p>
+          </div>
+          <div className={`relative mx-auto aspect-square w-full max-w-md transition-all duration-300 @2xl:max-w-none ${hl(["responsive"])}`}>
+            {spots.map((sp, i) => (
+              <motion.figure
+                key={`${seed}-${i}`}
+                drag
+                dragMomentum={false}
+                initial={{ opacity: 0, y: 30, rotate: 0 }}
+                animate={{ opacity: 1, y: 0, rotate: (rnd(seed, i) - 0.5) * 22 }}
+                whileHover={{ scale: 1.06, rotate: 0, zIndex: 30 }}
+                whileDrag={{ scale: 1.08, zIndex: 40, cursor: "grabbing" }}
+                transition={{ type: "spring", stiffness: 140, damping: 16, delay: i * 0.08 }}
+                className="absolute cursor-grab bg-white p-2 pb-7 shadow-xl shadow-black/20"
+                style={{ left: sp.left, top: sp.top, width: sp.w }}
+              >
+                <img
+                  src={ph(i + 10, 400, 400)}
+                  alt={`Foto de ejemplo: ${captions[i]}`}
+                  draggable={false}
+                  className="aspect-square w-full object-cover"
+                />
+                <figcaption className="absolute inset-x-0 bottom-1.5 text-center font-serif text-[11px] text-neutral-600">
+                  {captions[i]}
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+      );
+    } else if (hero === "dinamico") {
+      body = (
+        <div className="relative text-center">
+          <motion.div
+            aria-hidden
+            animate={reduce ? undefined : { x: [0, 60, 0], y: [0, 30, 0] }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-16 -left-10 size-64 rounded-full bg-primary/30 blur-3xl"
+          />
+          <motion.div
+            aria-hidden
+            animate={reduce ? undefined : { x: [0, -50, 0], y: [0, -30, 0] }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -right-10 bottom-0 size-72 rounded-full bg-[var(--tpl-accent)]/40 blur-3xl"
+          />
+          <div className="relative mx-auto max-w-3xl">
+            <div className={`transition-all duration-300 ${hl(["textos", "seo"])}`}>
+              {badge}
+              <h1 className="mt-5 text-4xl leading-[1.05] @2xl:text-6xl @4xl:text-7xl">
+                Tu negocio, listo para conseguir más
+                <span className="mt-1 block h-[1.15em] overflow-hidden text-primary italic">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={word}
+                      initial={{ y: "100%", opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: "-100%", opacity: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="block"
+                    >
+                      {words[word]}.
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              </h1>
+              <p className="mx-auto mt-5 max-w-md text-muted-foreground @2xl:text-lg">
+                Una web rápida, clara y pensada para convertir visitas en conversaciones.
+              </p>
+            </div>
+            {ctas}
+          </div>
+        </div>
+      );
+    } else if (hero === "marquesina") {
+      const row = (offset: number, dir: 1 | -1) => (
+        <div className="overflow-hidden">
+          <motion.div
+            animate={reduce ? undefined : { x: dir === 1 ? ["0%", "-50%"] : ["-50%", "0%"] }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="flex w-max gap-4"
+          >
+            {[0, 1].flatMap((k) =>
+              [0, 1, 2, 3, 4, 5].map((i) => (
+                <img
+                  key={`${k}-${i}`}
+                  src={ph(offset + i, 360, 240)}
+                  alt="Foto de ejemplo"
+                  draggable={false}
+                  className="h-28 w-44 shrink-0 rounded-2xl object-cover @2xl:h-36 @2xl:w-56"
+                />
+              )),
+            )}
+          </motion.div>
+        </div>
+      );
+      body = (
+        <div className="text-center">
+          <div className="mx-auto max-w-2xl">{texto}</div>
+          {ctas}
+          <div className={`-mx-5 mt-12 space-y-4 transition-all duration-300 @2xl:-mx-8 ${hl(["responsive"])}`}>
+            {row(20, 1)}
+            {row(40, -1)}
+          </div>
+        </div>
+      );
+    } else if (hero === "mosaico") {
+      const tile = "overflow-hidden rounded-2xl";
+      body = (
+        <div>
+          <div className="max-w-2xl">
+            {texto}
+            {ctas}
+          </div>
+          <div
+            className={`mt-12 grid auto-rows-[120px] grid-flow-dense grid-cols-2 gap-3 transition-all duration-300 @2xl:auto-rows-[150px] @2xl:grid-cols-4 ${hl(["responsive"])}`}
+          >
+            <img src={ph(30, 500, 600)} alt="Foto de ejemplo" className={`${tile} size-full object-cover row-span-2`} />
+            <img src={ph(31, 800, 300)} alt="Foto de ejemplo" className={`${tile} size-full object-cover col-span-1 @2xl:col-span-2`} />
+            <div className={`${tile} flex flex-col justify-between bg-primary p-4 text-primary-foreground`}>
+              <Zap className="size-5" />
+              <div>
+                <p className="font-serif text-3xl">24 h</p>
+                <p className="text-xs opacity-80">respuesta (ejemplo)</p>
+              </div>
+            </div>
+            <img src={ph(32, 400, 300)} alt="Foto de ejemplo" className={`${tile} size-full object-cover`} />
+            <a
+              href={WA}
+              target="_blank"
+              rel="noreferrer"
+              className={`${tile} flex flex-col justify-between bg-[#25d366] p-4 text-[#04290f] transition-transform hover:-translate-y-0.5`}
+            >
+              <MessageCircle className="size-5" />
+              <p className="text-sm font-medium">Escríbenos por WhatsApp</p>
+            </a>
+            <img src={ph(33, 400, 300)} alt="Foto de ejemplo" className={`${tile} size-full object-cover`} />
+          </div>
+        </div>
+      );
+    } else if (hero === "centrado") {
+      body = (
+        <div className="text-center">
+          <div className="mx-auto max-w-2xl">{texto}</div>
+          {ctas}
+          <div className="mx-auto mt-12 max-w-3xl">{visual("aspect-[16/9]")}</div>
+        </div>
+      );
+    } else if (hero === "inmersivo") {
+      body = (
+        <div className="grid items-center gap-10 @2xl:grid-cols-[1.3fr_1fr]">
+          <div>
+            {texto}
+            {ctas}
+          </div>
+          <motion.div
+            animate={reduce ? undefined : { y: [0, -8, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="hidden rounded-3xl border border-white/25 bg-white/10 p-6 text-white backdrop-blur-md @2xl:block"
+          >
+            <p className="text-sm text-white/70">Respuesta promedio</p>
+            <p className="mt-1 font-serif text-5xl">&lt; 24 h</p>
+            <div className="mt-5 flex items-center gap-3 rounded-2xl bg-white/15 p-3">
+              <span className="grid size-10 place-items-center rounded-full bg-[#25d366] text-[#04290f]">
+                <MessageCircle className="size-5" />
+              </span>
+              <span className="text-xs">«Hola, quiero cotizar»</span>
+            </div>
+          </motion.div>
+        </div>
+      );
+    } else if (hero === "formulario") {
+      body = (
+        <div className="grid items-center gap-10 @2xl:grid-cols-2">
+          <div>
+            {texto}
+            {ctas}
+          </div>
+          <div
+            className={`rounded-2xl border border-border bg-card p-5 shadow-xl shadow-primary/10 transition-all duration-300 @2xl:p-7 ${hl(["contacto"])}`}
+          >
+            <p className="font-serif text-2xl">Solicita tu cotización</p>
+            <p className="mt-1 text-sm text-muted-foreground">Te respondemos en menos de 24 horas.</p>
+            <div className="mt-5 space-y-3">
+              <input
+                aria-label="Nombre"
+                placeholder="Tu nombre"
+                className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+              <input
+                aria-label="Teléfono"
+                placeholder="Tu teléfono"
+                className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+              <button
+                type="button"
+                onClick={() => goTo("contacto")}
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-sm text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Quiero que me contacten <ArrowRight className="size-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (hero === "tipografico") {
+      body = (
+        <div>
+          <div className="max-w-4xl">
+            {texto}
+            {ctas}
+          </div>
+          <div className="mt-14 grid gap-6 border-t border-border pt-8 @xl:grid-cols-3">
+            {[
+              ["+120", "proyectos entregados"],
+              ["24 h", "tiempo de respuesta"],
+              ["98%", "clientes satisfechos"],
+            ].map(([n, t]) => (
+              <div key={t}>
+                <p className="font-serif text-5xl text-primary">{n}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{t} <span className="opacity-60">(ejemplo)</span></p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    } else {
+      body = (
+        <div className="grid items-center gap-12 @2xl:grid-cols-2">
+          <div>
+            {texto}
+            {ctas}
+          </div>
+          {visual("aspect-[5/4]")}
+        </div>
+      );
+    }
+
+    return (
+      <section
+        data-sec="inicio"
+        className={`relative overflow-hidden ${
+          hero === "carrusel" ? "" : "px-5 pt-14 pb-16 @2xl:px-8 @2xl:pt-20 @2xl:pb-24"
+        } ${
+          dark ? "bg-gradient-to-br from-primary via-[var(--tpl-mid)] to-[var(--tpl-accent)] text-white @2xl:py-28" : ""
+        } ${sectionBox(labels)}`}
+      >
+        {labels && <Chip n="1" text={`Sección Inicio · ${heroLabel}`} className="top-5 left-2" />}
+        {body}
+      </section>
+    );
   };
 
   const sectionBox = (on: boolean) =>
@@ -349,11 +961,84 @@ export function AlcanceViewer() {
               </button>
             </div>
 
+
+            <div className="mb-4 grid gap-4 rounded-2xl border border-border bg-card/70 p-4 md:grid-cols-[auto_1fr] md:items-start">
+              <div>
+                <p className="mb-2 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  <PaletteIcon className="size-4" /> Paleta de colores
+                </p>
+                <div className="flex gap-2" role="group" aria-label="Paleta de colores">
+                  {palettes.map((pl) => {
+                    const on = paletteKey === pl.key;
+                    return (
+                      <button
+                        key={pl.key}
+                        type="button"
+                        title={pl.label}
+                        aria-label={pl.label}
+                        aria-pressed={on}
+                        onClick={() => setPaletteKey(pl.key)}
+                        className={`relative size-10 rounded-full border-2 transition-all hover:scale-110 ${
+                          on ? "border-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background" : "border-transparent"
+                        }`}
+                        style={{ background: `linear-gradient(135deg, ${pl.swatch[0]} 50%, ${pl.swatch[1]} 50%)` }}
+                      />
+                    );
+                  })}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {palettes.find((pl) => pl.key === paletteKey)!.label}
+                </p>
+              </div>
+              <div className="min-w-0">
+                <p className="mb-2 flex items-center gap-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  <LayoutTemplate className="size-4" /> Tipo de hero (portada)
+                </p>
+                <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="group" aria-label="Tipo de hero">
+                  {heroes.map((h) => (
+                    <button
+                      key={h.key}
+                      type="button"
+                      aria-pressed={hero === h.key}
+                      onClick={() => {
+                        setHero(h.key);
+                        goTo("top");
+                      }}
+                      className={`h-9 shrink-0 rounded-full border px-4 text-sm transition-colors ${
+                        hero === h.key
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      {h.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <p className="text-xs text-muted-foreground">
+                    {heroes.find((h) => h.key === hero)!.desc}
+                  </p>
+                  {photoHeroes.includes(hero) && (
+                    <button
+                      type="button"
+                      onClick={() => setSeed(Math.floor(Math.random() * 100000))}
+                      className="inline-flex h-8 items-center gap-1.5 rounded-full border border-primary/40 px-3 text-xs text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Shuffle className="size-3.5" /> Mezclar imágenes
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div
               className="mx-auto w-full transition-[max-width] duration-500 ease-out"
               style={{ maxWidth: width }}
             >
-              <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-foreground/10">
+              <div
+                style={palettes.find((pl) => pl.key === paletteKey)!.vars as CSSProperties}
+                className="overflow-hidden rounded-2xl border border-border bg-background text-foreground shadow-2xl shadow-foreground/10 transition-colors duration-500"
+              >
                 {/* Barra de navegador */}
                 <div className="flex items-center gap-3 border-b border-border bg-secondary/70 px-4 py-2.5">
                   <div className="hidden gap-1.5 sm:flex">
@@ -462,90 +1147,8 @@ export function AlcanceViewer() {
                       </AnimatePresence>
                     </header>
 
-                    {/* SECCIÓN 1 · INICIO */}
-                    <section
-                      data-sec="inicio"
-                      className={`relative overflow-hidden px-5 pt-14 pb-16 @2xl:px-8 @2xl:pt-20 @2xl:pb-24 ${sectionBox(labels)}`}
-                    >
-                      {labels && <Chip n="1" text="Sección Inicio" />}
-                      <div className="grid items-center gap-12 @2xl:grid-cols-2">
-                        <div className={`transition-all duration-300 ${hl(["textos", "seo"])}`}>
-                          <p className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
-                            <span className="size-1.5 rounded-full bg-primary" />
-                            Atención personalizada
-                          </p>
-                          <h1 className="mt-5 text-4xl leading-[1.05] @2xl:text-5xl @4xl:text-6xl">
-                            Tu negocio, a un clic de tus{" "}
-                            <em className="text-primary">próximos clientes</em>.
-                          </h1>
-                          <p className="mt-5 max-w-md text-muted-foreground @2xl:text-lg">
-                            Una web rápida, clara y pensada para convertir visitas en conversaciones.
-                            Cuéntanos qué necesitas y te respondemos hoy.
-                          </p>
-                        </div>
+                    {renderHero()}
 
-                        <div className="@2xl:order-last">
-                          <div className={`flex flex-wrap gap-3 transition-all duration-300 ${hl(["contacto"])}`}>
-                            <a
-                              href="https://wa.me/51900000000?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex h-12 items-center gap-2 rounded-full bg-[#25d366] px-6 text-sm font-medium text-[#04290f] transition-transform hover:-translate-y-0.5"
-                            >
-                              <MessageCircle className="size-4" />
-                              Escríbenos por WhatsApp
-                            </a>
-                            <button
-                              type="button"
-                              onClick={() => goTo("servicios")}
-                              className="inline-flex h-12 items-center gap-2 rounded-full border border-foreground/20 px-6 text-sm transition-colors hover:bg-secondary"
-                            >
-                              Ver servicios <ArrowRight className="size-4" />
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Visual abstracto */}
-                        <div
-                          className={`relative aspect-[5/4] w-full transition-all duration-300 @2xl:col-start-2 @2xl:row-start-1 @2xl:row-span-2 ${hl(["responsive"])}`}
-                        >
-                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary via-[oklch(0.62_0.14_55)] to-[oklch(0.78_0.12_80)]" />
-                          <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(circle_at_30%_20%,white/25,transparent_55%)]" />
-                          <motion.div
-                            animate={reduce ? undefined : { y: [0, -10, 0] }}
-                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-[12%] left-[8%] w-[62%] rounded-2xl bg-card/95 p-4 shadow-xl"
-                          >
-                            <div className="h-2 w-1/3 rounded bg-primary/70" />
-                            <div className="mt-3 h-2 w-full rounded bg-muted" />
-                            <div className="mt-2 h-2 w-4/5 rounded bg-muted" />
-                            <div className="mt-4 h-8 w-24 rounded-full bg-foreground" />
-                          </motion.div>
-                          <motion.div
-                            animate={reduce ? undefined : { y: [0, 12, 0] }}
-                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                            className="absolute right-[6%] bottom-[10%] flex items-center gap-3 rounded-2xl bg-card/95 p-3 pr-5 shadow-xl"
-                          >
-                            <span className="grid size-10 place-items-center rounded-full bg-[#25d366] text-[#04290f]">
-                              <MessageCircle className="size-5" />
-                            </span>
-                            <span>
-                              <span className="block text-xs font-medium">Nuevo mensaje</span>
-                              <span className="block text-[11px] text-muted-foreground">
-                                «Hola, quiero cotizar»
-                              </span>
-                            </span>
-                          </motion.div>
-                          <motion.div
-                            animate={reduce ? undefined : { rotate: [0, 6, 0] }}
-                            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-[8%] right-[8%] grid size-14 place-items-center rounded-2xl bg-foreground text-background shadow-xl"
-                          >
-                            <Zap className="size-6" />
-                          </motion.div>
-                        </div>
-                      </div>
-                    </section>
 
                     {/* SECCIÓN 2 · SERVICIOS */}
                     <section
@@ -613,7 +1216,7 @@ export function AlcanceViewer() {
                           </p>
                           <div className={`mt-6 w-fit transition-all duration-300 ${hl(["contacto"])}`}>
                             <a
-                              href="https://wa.me/51900000000?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+                              href={WA}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex h-12 items-center gap-2 rounded-full bg-[#25d366] px-6 text-sm font-medium text-[#04290f] transition-transform hover:-translate-y-0.5"
@@ -715,7 +1318,7 @@ export function AlcanceViewer() {
                     {/* WhatsApp flotante */}
                     <div className="pointer-events-none sticky bottom-4 z-40 h-0">
                       <a
-                        href="https://wa.me/51900000000?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+                        href={WA}
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Escribir por WhatsApp"
